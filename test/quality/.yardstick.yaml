@@ -1,0 +1,41 @@
+x-ref:
+  # note: always reference images with BOTH a tag and a digest
+  images: &images
+    - docker.io/cloudbees/cloudbees-core-mm:2.277.3.1@sha256:4c564f473d38f23da1caa48c4ef53b958ef03d279232007ad3319b1f38584bdb
+
+# new vulnerabilities are added all of the time, instead of keeping up it's easier to ignore newer entries.
+# This approach helps tremendously with keeping the analysis relatively stable.
+default-max-year: 2020
+
+result-sets:
+  pr-vs-latest-via-sbom:
+    description: "latest released grype vs grype from the current build (via SBOM ingestion)"
+    matrix:
+      images: *images
+
+      tools:
+
+        - name: syft
+          version: v0.54.0
+          produces: SBOM
+
+        - name: grype
+          version: env:CURRENT_GRYPE_COMMIT
+          takes: SBOM
+
+        - name: grype
+          version: latest
+          takes: SBOM
+
+  pr-vs-latest-via-image:
+    description: "latest released grype vs grype from the current build"
+    matrix:
+      images: *images
+
+      tools:
+
+        - name: grype
+          version: env:CURRENT_GRYPE_COMMIT
+
+        - name: grype
+          version: latest

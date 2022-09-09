@@ -1,0 +1,2 @@
+git+ssh://git@github.com/anchore/yardstick.git@store-refactor
+tabulate==0.8.10
